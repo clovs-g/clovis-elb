@@ -82,23 +82,25 @@ const Gallery = ({ showFilters = true, itemsToShow }: GalleryProps) => {
         </div>
       )}
 
-      {/* Gallery Grid */}
+      {/* Gallery Grid - match admin sizing and spacing */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {displayItems.map((item) => (
           <div
             key={item.id}
-            className="relative group cursor-pointer"
+            className="group cursor-pointer overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             onClick={() => openLightbox(item)}
           >
-            <img
-              src={item.signed_url || item.image_url || item.image}
-              alt={item.title || 'Gallery'}
-              className="w-full h-48 object-cover rounded-lg shadow-md"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center rounded-lg">
-              <p className="text-white text-lg font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center px-4">
-                {item.title}
-              </p>
+            <div className="relative">
+              <img
+                src={item.signed_url || item.image_url || item.image}
+                alt={item.title || 'Gallery'}
+                className="w-full h-52 object-cover group-hover:scale-110 transition-transform duration-300 rounded-lg"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                <p className="text-white text-lg font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center px-4">
+                  {item.title}
+                </p>
+              </div>
             </div>
           </div>
         ))}
