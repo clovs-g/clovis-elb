@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/_vercel/insights/:path*", "destination": "/_vercel/insights/:path*" },
+    { "source": "/_next/:path*", "destination": "/_next/:path*" },
+    { "source": "/admin/:path*", "destination": "/index.html" },
+    { "source": "(/.*)", "destination": "/index.html" }
+  ]
+}
