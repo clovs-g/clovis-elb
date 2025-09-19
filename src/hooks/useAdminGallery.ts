@@ -21,6 +21,7 @@ export const useAdminGallery = () => {
     try {
       setLoading(true);
       const data = await galleryAPI.getGalleryImages();
+      console.log('Fetched gallery images:', data);
       const mapped = await Promise.all(
         (data || []).map(async (img: any) => {
           img.signed_url = await getSignedStorageUrl('gallery-images', img.image_url);
@@ -49,18 +50,22 @@ export const useAdminGallery = () => {
   useEffect(() => { fetchImages(); }, [fetchImages]);
 
   /* Upload new image */
-  const uploadImage = async (file: File, category: string = 'custom') => {
-    const filePath = `${Date.now()}_${file.name}`;
+  const uploadImage = async (file: File, category: string = 'custom', name?: string) => {
+    // Map UI category to DB value (e.g., 'slices-cookies' to 'slices-cookies')
+    // and ensure folder name matches filter value
+    const safeCategory = category.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    const filePath = `${safeCategory}/${Date.now()}_${file.name}`;
     const client = supabaseAdmin ?? supabase;
     const { error } = await client.storage.from('gallery-images').upload(filePath, file);
     if (error) throw error;
-    // insert row
-    // Derive a default title from the filename (without the extension) to satisfy the NOT NULL constraint.
-    const defaultTitle = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ').trim();
+    // Use provided name or fallback to filename
+    const defaultTitle = name?.trim() || file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ').trim();
+    // Store the safeCategory in the DB so it matches the filter
+    console.log('Uploading image:', { filePath, title: defaultTitle, category: safeCategory });
     const { error: insertErr } = await client.from('gallery_images').insert({
       image_url: filePath,
-      title: defaultTitle || file.name,
-      category,
+      title: defaultTitle,
+      category: safeCategory,
     });
     if (insertErr) throw insertErr;
     await fetchImages();

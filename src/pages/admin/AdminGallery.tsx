@@ -14,7 +14,8 @@ const AdminGallery: React.FC = () => {
   ];
 
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
-  const [uploadCategory, setUploadCategory] = useState<string>('custom');
+  const [uploadCategory, setUploadCategory] = useState<string>('birthday');
+  const [uploadName, setUploadName] = useState<string>('');
   const fileInput = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -23,7 +24,10 @@ const AdminGallery: React.FC = () => {
     if (!file) return;
     try {
       setUploading(true);
-      await uploadImage(file, uploadCategory);
+      await uploadImage(file, uploadCategory, uploadName);
+      setUploadName('');
+      // Optionally reset category to the last selected filter
+      // setUploadCategory(selectedCategoryFilter !== 'all' ? selectedCategoryFilter : 'birthday');
     } catch (err: any) {
       alert(err.message || 'Upload failed');
     } finally {
@@ -58,6 +62,14 @@ const AdminGallery: React.FC = () => {
 
         {/* Upload controls */}
         <div className="flex items-center gap-4">
+          <input
+            type="text"
+            placeholder="Image name/title"
+            value={uploadName}
+            onChange={e => setUploadName(e.target.value)}
+            className="border border-gray-300 rounded-lg px-2 py-1 text-sm"
+            style={{ minWidth: 150 }}
+          />
           <select
             value={uploadCategory}
             onChange={(e) => setUploadCategory(e.target.value)}
@@ -94,14 +106,23 @@ const AdminGallery: React.FC = () => {
           {/* Filter images by selected category */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {images
-            .filter((img) => selectedCategoryFilter === 'all' || img.category === selectedCategoryFilter)
+            .filter((img) => {
+              if (selectedCategoryFilter === 'all') return true;
+              // Normalize both sides for comparison
+              const normalize = (val: string | undefined) => (val || '').toLowerCase().replace(/[^a-z0-9-]/g, '-');
+              return normalize(img.category) === normalize(selectedCategoryFilter);
+            })
             .map((img) => (
             <div key={img.id} className="relative group">
               <img
                 src={img.signed_url || img.image_url}
-                alt="Gallery"
+                alt={img.title || 'Gallery'}
                 className="w-full h-48 object-cover rounded-lg shadow-md"
               />
+              <div className="mt-2 text-center text-xs text-gray-700">
+                <strong>{img.title}</strong>
+                <div>cat: <span style={{color:'red'}}>{img.category}</span></div>
+              </div>
               <button
                 onClick={() => {
                   if (window.confirm('Delete this image?')) {

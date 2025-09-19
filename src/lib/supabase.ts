@@ -21,6 +21,35 @@ export const supabaseAdmin = supabaseServiceRoleKey
 
 // Database types
 export interface Database {
+      gallery_images: {
+        Row: {
+          id: string;
+          image_url: string;
+          title: string;
+          category: string;
+          display_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          image_url: string;
+          title: string;
+          category: string;
+          display_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          image_url?: string;
+          title?: string;
+          category?: string;
+          display_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
   public: {
     Tables: {
       admin_users: {
