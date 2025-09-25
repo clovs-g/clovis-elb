@@ -104,8 +104,8 @@ const OrderConfirmation = () => {
                       <MapPin className="h-5 w-5 text-amber-600 mt-0.5" />
                       <div>
                         <p className="font-medium">Elbaker our Bakery</p>
-                        <p className="text-gray-600">123 Baker Street</p>
-                        <p className="text-gray-600">Sweet City, SC 12345</p>
+                        <p className="text-gray-600">Makindye Mubaraka</p>
+                        <p className="text-gray-600">Ug Kampala</p>
                       </div>
                     </div>
                   ) : (
@@ -158,7 +158,7 @@ const OrderConfirmation = () => {
               <div className="flex items-start space-x-3">
                 <CheckCircle className="h-5 w-5 mt-0.5" />
                 <p>
-                  If you have any questions, please call us at (123) 456-7890 or email info@elbaker.com
+                  If you have any questions, please call us at 0780746351 or email info@elbaker.com
                 </p>
               </div>
             </div>
